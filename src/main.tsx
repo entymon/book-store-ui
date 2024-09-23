@@ -10,8 +10,8 @@ import Layout from './components/Layout'
 
 const router = createBrowserRouter([
   { path: '/', element: <Layout><HomePage/></Layout>},
-  { path: '/create', element: <Layout><DetailsPage /></Layout>},
-  { path: '/details', element: <Layout><CreatePage /></Layout>}
+  { path: '/create', element: <Layout><CreatePage /></Layout>},
+  { path: '/details/:id', element: <Layout><DetailsPage /></Layout>}
 ])
 
 createRoot(document.getElementById('root')!).render(
