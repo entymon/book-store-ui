@@ -4,18 +4,20 @@ import './index.css'
 
 import { RouterProvider, createBrowserRouter } from 'react-router-dom'
 import DetailsPage from './pages/DetailsPage'
-import CreatePage from './pages/CreatePage'
 import HomePage from './pages/HomePage'
 import Layout from './components/Layout'
+import { LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment'
 
 const router = createBrowserRouter([
   { path: '/', element: <Layout><HomePage/></Layout>},
-  { path: '/create', element: <Layout><CreatePage /></Layout>},
   { path: '/details/:id', element: <Layout><DetailsPage /></Layout>}
 ])
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <LocalizationProvider dateAdapter={AdapterMoment} adapterLocale="en">
+      <RouterProvider router={router} />
+    </LocalizationProvider>
   </StrictMode>,
 )

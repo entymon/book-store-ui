@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import Paper from '@mui/material/Paper';
 import { Autocomplete, Box, TextField, Typography } from '@mui/material';
@@ -6,6 +7,7 @@ import { useState, useEffect } from 'react';
 import top100Films from '../dummy/top100Films';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
+import { API_URL } from '../constants';
 
 const columns: GridColDef[] = [
   { 
@@ -22,8 +24,9 @@ const columns: GridColDef[] = [
     type: 'date',
     sortable: false,
     width: 120,
-    valueFormatter: (dateTo) => {
-      return moment(dateTo,'DD-MM-YYYY').format('DD-MM-YYYY')
+    valueFormatter: (dateTo: any) => {
+      console.log(dateTo)
+      return moment(dateTo.date,'DD-MM-YYYY').format('DD-MM-YYYY')
     }
   },
   {
@@ -50,29 +53,19 @@ const columns: GridColDef[] = [
   },
 ];
 
-const rows = [
-  { id: 1, title: 'Snow', author: 'Jon', description: 'Lorem ipsum dolor semit', publishDate: '18-03-2010', isbn: '83-123213-4324', coverPhoto: 'http://localhost:8100/images/cat-1.jpg'},
-  { id: 2, title: 'Lannister', author: 'Cersei', description: 'Lorem ipsum dolor semit', publishDate: '18-03-2010', isbn: '83-123213-4324', coverPhoto: 'http://localhost:8100/images/cat-1.jpg'},
-  { id: 3, title: 'Lannister', author: 'Jaime', description: 'Lorem ipsum dolor semit', publishDate: '18-03-2010', isbn: '83-123213-4324', coverPhoto: 'http://localhost:8100/images/cat-1.jpg'},
-  { id: 4, title: 'Stark', author: 'Arya', description: 'Lorem ipsum dolor semit', publishDate: '18-03-2010', isbn: '83-123213-4324', coverPhoto: 'http://localhost:8100/images/cat-1.jpg'},
-  { id: 5, title: 'Targaryen', author: 'Daenerys', description: 'Lorem ipsum dolor semit', publishDate: '18-03-2010', isbn: '83-123213-4324', coverPhoto: 'http://localhost:8100/images/cat-1.jpg'},
-  { id: 6, title: 'Melisandre', author: 'Bla', description: 'Lorem ipsum dolor semit', publishDate: '18-03-2010', isbn: '83-123213-4324', coverPhoto: 'http://localhost:8100/images/cat-1.jpg'},
-];
-
-const paginationModel = { page: 0, pageSize: 5 };
+const paginationModel = { page: 1, pageSize: 10 };
 
 export default function HomePage() {
 
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:8100/books')
+    fetch(`${API_URL}/books`)
       .then((res) => {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
-        setBooks(data);
+        setBooks(data.data);
       });
   }, []);
 
@@ -89,7 +82,7 @@ export default function HomePage() {
       </Box>
       <Paper sx={{ height: 400, width: '100%' }}>
         <DataGrid
-          rows={rows}
+          rows={books}
           columns={columns}
           initialState={{ pagination: { paginationModel } }}
           pageSizeOptions={[5, 10]}

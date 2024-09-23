@@ -58,15 +58,14 @@ export default function DrawerAppBar({ children }: { children: any }) {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            Book Store
+            <Button component={Link} to="/" sx={{ color: '#FFF', fontSize: 28 }}>
+              Book Store
+            </Button>
           </Typography>
           <Box sx={{ display: { xs: 'none', sm: 'block' } }}>
-                <Button variant="contained" component={Link} to="/" sx={{ color: '#000', marginRight: 5, backgroundColor: '#FFF' }}>
-                    Home
-                </Button>
-                <Button variant="contained" component={Link} to="/create" sx={{ color: '#000', backgroundColor: '#FFF'  }}>
-                    Add Book
-                </Button>
+            <Button variant="contained" component={Link} to="/" sx={{ color: '#000', marginRight: 5, backgroundColor: '#FFF' }}>
+                Home
+            </Button>
           </Box>
         </Toolbar>
       </AppBar>
