@@ -4,7 +4,7 @@ import Paper from '@mui/material/Paper';
 import { Autocomplete, Box, TextField, Typography } from '@mui/material';
 import { useState, useEffect } from 'react';
 
-import top100Films from '../dummy/top100Films';
+// import top100Films from '../dummy/top100Films';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { API_URL } from '../constants';
@@ -25,7 +25,6 @@ const columns: GridColDef[] = [
     sortable: false,
     width: 120,
     valueFormatter: (dateTo: any) => {
-      console.log(dateTo)
       return moment(dateTo.date,'DD-MM-YYYY').format('DD-MM-YYYY')
     }
   },
@@ -58,8 +57,13 @@ const paginationModel = { page: 1, pageSize: 10 };
 export default function HomePage() {
 
   const [books, setBooks] = useState([]);
+  const [searchBooks, setSearchBooks] = useState([]);
 
   useEffect(() => {
+    getAll()
+  }, []);
+
+  const getAll = () => {
     fetch(`${API_URL}/books`)
       .then((res) => {
         return res.json();
@@ -67,7 +71,28 @@ export default function HomePage() {
       .then((data) => {
         setBooks(data.data);
       });
-  }, []);
+  }
+
+  const doSearch = (phrase: string) => {
+    fetch(`${API_URL}/search/${phrase}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setSearchBooks(data);
+      });
+  }
+
+  const getOne = (id: number) => {
+    fetch(`${API_URL}/book/${id}`)
+      .then((res) => {
+        return res.json();
+      })
+      .then((data) => {
+        setSearchBooks([(data as never)]);
+        setBooks([(data as never)]);
+      });
+  }
 
   return (
     <Box>
@@ -75,9 +100,22 @@ export default function HomePage() {
         <Typography>Search for</Typography>
         <Autocomplete
           disablePortal
-          options={top100Films}
+          options={searchBooks}
+          getOptionLabel={(options: { title: string; author: string; id: number }) => `${options.title} - ${options.author}`}
           sx={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} label="Book Title or Author" />}
+          renderInput={(params) => {
+            return (<TextField {...params} label="Book Title or Author" />)
+          }}
+          onInputChange={(event) => {
+            doSearch((event.target as any).value)
+          }}
+          onChange={(_event, value, reason: string) => { 
+            if (reason === 'clear') {
+              getAll()
+            } else {
+              getOne((value as any).id)
+            }
+          }}
         />
       </Box>
       <Paper sx={{ height: 400, width: '100%' }}>
